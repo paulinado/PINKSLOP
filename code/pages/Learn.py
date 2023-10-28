@@ -15,7 +15,7 @@ def start_quiz():
     st.progress(level/7, "Level "+str(level))
 
 with col3:
-    image = Image.open('./../elements/polly_pig.jpg')
+    image = Image.open('./elements/polly_pig.jpg')
     st.image(image=image)
 
 with col2:

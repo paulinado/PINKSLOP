@@ -7,3 +7,4 @@ pathlib
 streamlit-option-menu==0.3.2
 extra-streamlit-components==0.1.53
 altair==4.0
+deta

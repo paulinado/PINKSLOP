@@ -4,8 +4,23 @@ import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 import pickle
 from pathlib import Path
-from views import Learn, Progress, Settings
+from views import Learn, Progress, Settings, ExampleDB
 import re
+from deta import Deta
+
+def new_user(username, password):
+    return db.put({'username': username, 'password': password})
+
+def get_all_users():
+    users = db.fetch()
+    return users.items
+
+def get_all_usernames():
+    users = db.fetch()
+    usernames = []
+    for user in users.items:
+        usernames.append(user['username'])
+    return usernames
 
 def validate_username(username):
     """
@@ -25,16 +40,18 @@ def sign_up():
         username = st.text_input('Username', placeholder='Enter Your Username')
         password1 = st.text_input('Password', placeholder='Enter Your Password', type='password')
         password2 = st.text_input('Confirm Password', placeholder='Confirm Your Password', type='password')
-
+        submitted = st.form_submit_button('Sign Up')
+        
         if validate_username(username):
-            if username not in []: #get_usernames():
+            if username not in get_all_usernames():
                     if len(password1) >= 6:
                         if password1 == password2:
                             # Add User to DB
                             hashed_password = stauth.Hasher([password2]).generate()
-                            #insert_user(email, username, hashed_password[0])
-                            st.success('Account created successfully!!')
-                            st.balloons()
+                            if submitted:
+                                new_user(username, hashed_password[0])
+                                st.success('Account created successfully!!')
+                                st.balloons()
                         else:
                             st.warning('Passwords Do Not Match')
                     else:
@@ -45,15 +62,16 @@ def sign_up():
         else:
             st.warning('Invalid Username')
 
-
-        st.form_submit_button('Sign Up')
+        
+deta = Deta(st.secrets["data_key"])
+db = deta.Base("users")
 
 st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 
 try:
-    #users = fetch_users()
-    # emails = []
+    # users = get_all_users()
+    # keys = []
     # usernames = []
     # passwords = []
 
@@ -61,27 +79,33 @@ try:
     usernames = ["pparker", "rmiller"]
     
     # for user in users:
-    #     emails.append(user['key'])
+    #     keys.append(user['key'])
     #     usernames.append(user['username'])
     #     passwords.append(user['password'])
+    
+    # print(usernames)
+    # print(passwords)
 
     # credentials = {'usernames': {}}
-    # for index in range(len(emails)):
-    #     credentials['usernames'][usernames[index]] = {'name': emails[index], 'password': passwords[index]}
+    # for index in range(len(usernames)):
+    #     credentials['usernames'][usernames[index]] = {'name': keys[index], 'password': passwords[index]}
     
     file_path = Path(__file__).parent / "hashed_pw.pkl"
     with file_path.open("rb") as file:
         hashed_passwords = pickle.load(file)
         authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "numberninjas", "abcdef")
-
+    
     # Authenticator = stauth.Authenticate(credentials, cookie_name='Streamlit', key='abcdef', cookie_expiry_days=4)
-
     name, authentication_status, username = authenticator.login("Login", "main")
+    #print(authentication_status)
+    #
+
+    #name, authentication_status, username = authenticator.login("Login", "main")
 
     info, info1 = st.columns(2)
 
-    if not authentication_status:
-        sign_up()
+    # if not authentication_status:
+    #     sign_up()
 
     if username:
         if username in usernames:
@@ -92,7 +116,7 @@ try:
                 
                 with st.sidebar:
                     selected = option_menu(menu_title=None,  # required
-                    options=["Learn", "Progress", "Settings"],  # required
+                    options=["Learn", "Progress", "Settings", "ExampleDB"],  # required
                     icons=None,  # optional
                     menu_icon="menu-down",  # optional
                     default_index=0,  # optional
@@ -107,6 +131,9 @@ try:
                 
                 if selected=="Settings":
                     Settings.createPage()
+                
+                if selected=="ExampleDB":
+                    ExampleDB.createPage(deta)
 
             elif not authentication_status:
                 with info:
@@ -121,3 +148,4 @@ try:
 
 except:
     pass
+

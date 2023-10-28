@@ -1,5 +1,5 @@
 streamlit
 streamlit-auth0-component
-numpy
+pandas
 pillow
 path

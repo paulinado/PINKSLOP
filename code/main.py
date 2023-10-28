@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-#from auth0_component import login_button
-import numpy
+from auth0_component import login_button
 
 st.header("Home")
 
 clientId = "cONtS7pEn44avXLyIsdJngqkDu0bwGqj"
 domain = "dev-ep7cvhbpossvx8o6.uk.auth0.com"
 
-#user_info = login_button(clientId, domain = domain)
+user_info = login_button(clientId, domain = domain)

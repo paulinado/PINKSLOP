@@ -63,49 +63,31 @@ def sign_up():
             st.warning('Invalid Username')
 
         
+        
 deta = Deta(st.secrets["data_key"])
 db = deta.Base("users")
-
 st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 
 try:
-    # users = get_all_users()
-    # keys = []
-    # usernames = []
-    # passwords = []
-
-    names = ["Peter Parker", "Rebecca Miller"]
-    usernames = ["pparker", "rmiller"]
+    users = get_all_users()
+    keys = []
+    usernames = []
+    hashed_passwords = []
     
-    # for user in users:
-    #     keys.append(user['key'])
-    #     usernames.append(user['username'])
-    #     passwords.append(user['password'])
+    for user in users:
+        keys.append(user['key'])
+        usernames.append(user['username'])
+        hashed_passwords.append(user['password'])
     
-    # print(usernames)
-    # print(passwords)
-
-    # credentials = {'usernames': {}}
-    # for index in range(len(usernames)):
-    #     credentials['usernames'][usernames[index]] = {'name': keys[index], 'password': passwords[index]}
+    authenticator = stauth.Authenticate(keys, usernames, hashed_passwords, "numberninjas", "abcdef")
     
-    file_path = Path(__file__).parent / "hashed_pw.pkl"
-    with file_path.open("rb") as file:
-        hashed_passwords = pickle.load(file)
-        authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "numberninjas", "abcdef")
-    
-    # Authenticator = stauth.Authenticate(credentials, cookie_name='Streamlit', key='abcdef', cookie_expiry_days=4)
-    name, authentication_status, username = authenticator.login("Login", "main")
-    #print(authentication_status)
-    #
-
-    #name, authentication_status, username = authenticator.login("Login", "main")
+    key, authentication_status, username = authenticator.login("Login", "main")
 
     info, info1 = st.columns(2)
 
-    # if not authentication_status:
-    #     sign_up()
+    if not authentication_status:
+        sign_up()
 
     if username:
         if username in usernames:
@@ -148,4 +130,3 @@ try:
 
 except:
     pass
-

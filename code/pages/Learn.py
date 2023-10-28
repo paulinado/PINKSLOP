@@ -6,7 +6,7 @@ import sys
 level=0
 col1, col2, col3 = st.columns([1, 2, 1])
 
-dir = path.Path(__file__).abspath()
+dir = path.Path(__file__).abspath().parent.parent.parent
 sys.path.append(dir.parent.parent.parent)
 
 if 'clicked' not in st.session_state:
@@ -20,7 +20,7 @@ def start_quiz():
     st.progress(level/7, "Level "+str(level))
 
 with col3:
-    path_to_image = "./../elements/polly_pig.jpg"
+    path_to_image = dir + "/elements/polly_pig.jpg"
     image = Image.open(path_to_image)
     st.image(image=image)
 

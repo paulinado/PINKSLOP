@@ -4,7 +4,6 @@ pandas
 pillow
 path
 streamlit-authenticator==0.1.5 
-pickle
 pathlib
 streamlit-option-menu==0.3.2
 extra-streamlit-components==0.1.53

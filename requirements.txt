@@ -1,2 +1,0 @@
-streamlit
-streamlit-auth0-component

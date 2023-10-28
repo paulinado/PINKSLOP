@@ -12,3 +12,5 @@ domain = "dev-ep7cvhbpossvx8o6.uk.auth0.com"
 
 user_info = login_button(clientId, domain = domain)
 st.write(user_info)
+ 
+st.header("Home")

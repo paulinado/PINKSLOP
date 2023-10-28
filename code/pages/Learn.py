@@ -7,7 +7,7 @@ level=0
 col1, col2, col3 = st.columns([1, 2, 1])
 
 dir = path.Path(__file__).abspath()
-sys.path.append(dir.parent.parent)
+sys.path.append(dir.parent.parent.parent)
 
 if 'clicked' not in st.session_state:
     st.session_state.clicked = False

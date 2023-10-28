@@ -3,4 +3,3 @@ streamlit-auth0-component
 numpy
 pillow
 path
-sys

@@ -63,9 +63,9 @@ def sign_up():
             st.warning('Invalid Username')
 
         
-        
 deta = Deta(st.secrets["data_key"])
 db = deta.Base("users")
+
 st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 
@@ -148,3 +148,4 @@ try:
 
 except:
     pass
+

@@ -1,4 +1,5 @@
 import streamlit as st
+from PIL import Image
 
 level=0
 col1, col2, col3 = st.columns([1, 2, 1])
@@ -14,7 +15,8 @@ def start_quiz():
     st.progress(level/7, "Level "+str(level))
 
 with col3:
-    st.image(image='./../elements/polly_pig.jpg')
+    image = Image.open('./../elements/polly_pig.jpg')
+    st.image(image=image)
 
 with col2:
     button = st.empty()

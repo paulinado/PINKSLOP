@@ -120,4 +120,4 @@ try:
 
 
 except:
-    st.success('Refresh Page')
+    pass

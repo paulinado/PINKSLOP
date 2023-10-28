@@ -1,14 +1,16 @@
-import pickle
-from pathlib import Path
+import streamlit as st
 
 import streamlit_authenticator as stauth
 
-names = ["Peter Parker", "Rebecca Miller"]
+from deta import Deta
+
+deta = Deta(st.secrets["data_key"])
+db = deta.Base("users")
+
 usernames = ["pparker", "rmiller"]
 passwords = ["pass123", "pass123"]
 
 hashed_passwords = stauth.Hasher(passwords).generate()
 
-file_path = Path(__file__).parent / "hashed_pw.pkl"
-with file_path.open("wb") as file:
-    pickle.dump(hashed_passwords, file)
+for index in range(len(usernames)):
+    db.put({'username': usernames[index], 'password': hashed_passwords[index]})

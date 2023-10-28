@@ -1,4 +1,4 @@
- import streamlit as st
+import streamlit as st
 import pandas as pd
 from auth0_component import login_button
 

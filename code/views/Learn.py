@@ -11,6 +11,7 @@ def start_quiz():
     num = level/7
     string = "Level "+str(level)
     st.progress(num, string)
+    st.text('This is some text.')
         
 def createPage():
     st.title("Learn")

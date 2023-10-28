@@ -1,4 +1,4 @@
 [theme]
-backgroundColor="#F0F2F6"
-base="dark"
-primaryColor="purple"
+base="light"
+primaryColor="#deaca2"
+textColor="#5069af"

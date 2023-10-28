@@ -48,7 +48,7 @@ def sign_up():
 
         st.form_submit_button('Sign Up')
 
-st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='collapsed')
+st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 
 try:

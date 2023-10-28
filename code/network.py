@@ -5,7 +5,24 @@ import time
 from model import Model
 from onestep import OneStep
 
-path_to_file = './data/'
+# Batch size
+BATCH_SIZE = 64
+
+# Buffer size to shuffle the dataset
+# (TF data is designed to work with possibly infinite sequences,
+# so it doesn't attempt to shuffle the entire sequence in memory. Instead,
+# it maintains a buffer in which it shuffles elements).
+BUFFER_SIZE = 10000
+
+def text_from_ids(ids):
+  return tf.strings.reduce_join(chars_from_ids(ids), axis=-1)
+
+def split_input_target(sequence):
+    input_text = sequence[:-1]
+    target_text = sequence[1:]
+    return input_text, target_text
+
+path_to_file = './../data/train.txt'
 
 text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
 
@@ -27,20 +44,6 @@ ids_dataset = tf.data.Dataset.from_tensor_slices(all_ids)
 seq_length = 100
 sequences = ids_dataset.batch(seq_length+1, drop_remainder=True)
 
-def split_input_target(sequence):
-    input_text = sequence[:-1]
-    target_text = sequence[1:]
-    return input_text, target_text
-
-# Batch size
-BATCH_SIZE = 64
-
-# Buffer size to shuffle the dataset
-# (TF data is designed to work with possibly infinite sequences,
-# so it doesn't attempt to shuffle the entire sequence in memory. Instead,
-# it maintains a buffer in which it shuffles elements).
-BUFFER_SIZE = 10000
-
 dataset = sequences.map(split_input_target)
 
 dataset = (
@@ -56,7 +59,7 @@ vocab_size = len(ids_from_chars.get_vocabulary())
 embedding_dim = 256
 
 # Number of RNN units
-rnn_units = 1024
+rnn_units = 2048
 
 model = Model(
     vocab_size=vocab_size,
@@ -87,14 +90,14 @@ checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=checkpoint_prefix,
     save_weights_only=True)
 
-EPOCHS = 10
+EPOCHS = 30
 
 history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
 one_step_model = OneStep(model, chars_from_ids, ids_from_chars)
 
 start = time.time()
 states = None
-next_char = tf.constant(['ROMEO:'])
+next_char = tf.constant(['Romeo'])
 result = [next_char]
 
 for n in range(1000):
@@ -106,25 +109,11 @@ end = time.time()
 print(result[0].numpy().decode('utf-8'), '\n\n' + '_'*80)
 print('\nRun time:', end - start)
 
-start = time.time()
-states = None
-next_char = tf.constant(['ROMEO:', 'ROMEO:', 'ROMEO:', 'ROMEO:', 'ROMEO:'])
-result = [next_char]
-
-for n in range(1000):
-  next_char, states = one_step_model.generate_one_step(next_char, states=states)
-  result.append(next_char)
-
-result = tf.strings.join(result)
-end = time.time()
-print(result, '\n\n' + '_'*80)
-print('\nRun time:', end - start)
-
 tf.saved_model.save(one_step_model, 'one_step')
 one_step_reloaded = tf.saved_model.load('one_step')
 
 states = None
-next_char = tf.constant(['ROMEO:'])
+next_char = tf.constant(['Romeo'])
 result = [next_char]
 
 for n in range(100):

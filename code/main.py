@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
-from auth0_component import login_button
+#from auth0_component import login_button
+import numpy
 
 st.header("Home")
 

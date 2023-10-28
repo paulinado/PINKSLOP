@@ -2,6 +2,8 @@ import streamlit as st
 import openai
 
 st.header("Chat")
+st.text("""
+Get help with your math problems by using OpenAI-powered chat bot""")
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 

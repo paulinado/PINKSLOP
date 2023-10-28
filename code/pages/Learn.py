@@ -13,6 +13,9 @@ def start_quiz():
     st.header("Learn")
     st.progress(level/7, "Level "+str(level))
 
+with col3:
+    st.image(image='./../elements/polly_pig.jpg')
+
 with col2:
     button = st.empty()
     click = button.button("Begin Learning 🎉", on_click=click_button)

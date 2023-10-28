@@ -7,6 +7,9 @@ from pathlib import Path
 from views import Learn, Progress, Settings
 import re
 
+st.set_page_config(page_title='NumberNinjas', page_icon='🥷', initial_sidebar_state='collapsed')
+v_menu = ["Learn", "Progress", "Settings"]
+
 def validate_username(username):
     """
     Checks Validity of userName
@@ -48,76 +51,61 @@ def sign_up():
 
         st.form_submit_button('Sign Up')
 
-st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='collapsed')
-
-
-try:
-    #users = fetch_users()
-    # emails = []
-    # usernames = []
-    # passwords = []
-
+def log_in():
     names = ["Peter Parker", "Rebecca Miller"]
     usernames = ["pparker", "rmiller"]
-    
-    # for user in users:
-    #     emails.append(user['key'])
-    #     usernames.append(user['username'])
-    #     passwords.append(user['password'])
 
-    # credentials = {'usernames': {}}
-    # for index in range(len(emails)):
-    #     credentials['usernames'][usernames[index]] = {'name': emails[index], 'password': passwords[index]}
-    
+    # load hashed passwords
     file_path = Path(__file__).parent / "hashed_pw.pkl"
     with file_path.open("rb") as file:
         hashed_passwords = pickle.load(file)
         authenticator = stauth.Authenticate(names, usernames, hashed_passwords, "numberninjas", "abcdef")
 
-    # Authenticator = stauth.Authenticate(credentials, cookie_name='Streamlit', key='abcdef', cookie_expiry_days=4)
-
     name, authentication_status, username = authenticator.login("Login", "main")
 
-    info, info1 = st.columns(2)
 
-    if not authentication_status:
-        sign_up()
+    if authentication_status == False:
+        st.warning("Incorrect username/password")
 
-    if username:
-        if username in usernames:
-            if authentication_status:
-                # let User see app
-                st.sidebar.subheader(f'Welcome {username}')
-                authenticator.logout('Log Out', 'sidebar')
-                
-                with st.sidebar:
-                    selected = option_menu(menu_title=None,  # required
-                    options=["Learn", "Progress", "Settings"],  # required
-                    icons=None,  # optional
-                    menu_icon="menu-down",  # optional
-                    default_index=0,  # optional
-                    )
+    if authentication_status == None:
+        st.warning("Please enter your username and password")
+
+    if authentication_status:
+        with st.sidebar:
+            authenticator.logout("Logout", "sidebar")
+            st.header(f"Welcome {name}")
+            selected = option_menu(menu_title=None,  # required
+            options=v_menu,  # required
+            icons=None,  # optional
+            menu_icon="menu-down",  # optional
+            default_index=0,  # optional
+            )
             
         
-                if selected=="Learn":
-                    Learn.createPage()
-                
-                if selected=="Progress":
-                    Progress.createPage()
-                
-                if selected=="Settings":
-                    Settings.createPage()
-
-            elif not authentication_status:
-                with info:
-                    st.error('Incorrect Password or username')
-            else:
-                with info:
-                    st.warning('Please feed in your credentials')
-        else:
-            with info:
-                st.warning('Username does not exist, Please Sign up')
+        if selected=="Learn":
+            Learn.createPage()
+        
+        if selected=="Progress":
+            Progress.createPage()
+        
+        if selected=="Settings":
+            Settings.createPage()
 
 
-except:
-    st.success('Refresh Page')
+def signinPage():
+    col1,col2 = st.columns(2)
+    with col1:
+            log_in()
+    
+    with col2:
+            sign_up()
+
+st.title("🥷 Welcome to NumberNinjas! 🥷")
+signinPage()
+
+# btn1, btn2 = st.columns(2)
+
+# with btn2:
+#     sign_up()
+# with btn1:
+#     log_in()

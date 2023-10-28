@@ -1,5 +1,11 @@
-streamlit
+streamlit==1.18.0
 streamlit-auth0-component
 pandas
 pillow
 path
+streamlit-authenticator==0.1.5 
+pickle
+pathlib
+streamlit-option-menu==0.3.2
+extra-streamlit-components==0.1.53
+altair==4.0

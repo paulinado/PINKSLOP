@@ -124,7 +124,7 @@ try:
                     Progress.createPage(key)
                 
                 if selected=="Settings":
-                    Settings.createPage()
+                    Settings.createPage(key)
                 
             elif not authentication_status:
                 with info:

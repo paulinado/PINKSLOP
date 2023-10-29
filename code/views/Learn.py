@@ -10,9 +10,6 @@ from genquiz_easy import get_easy_question
 from genquiz_medium import get_medium_question
 from genquiz_hard import get_hard_question
 
-#make a setting to edit number of questions per level
-QUESTIONS_NUMBER = 10
-
 dir = path.Path(__file__).abspath().parent.parent.parent
 sys.path.append(dir.parent.parent.parent)
 
@@ -155,7 +152,7 @@ def prev_question():
         decr_current_question()
 
 def next_question():
-    if int(st.session_state.current_question) < QUESTIONS_NUMBER-1:
+    if int(st.session_state.current_question) < st.session_state.numPerLevel-1:
         incr_current_question()
         next_question = get_next_question()
         add_question(next_question)
@@ -171,7 +168,7 @@ def createPage(key):
     
     #db.put({'level': 0, 'questions':[[],[],[]], 'first_time_correct':[0,0,0], 'current_question':0, 'answers':[{},{},{}], 'questions_answered':0},key)
     if not key in keys:
-        db.put({'level': 0, 'questions':[[],[],[]], 'first_time_correct':[0,0,0], 'current_question':0, 'answers':[dict(),dict(),dict()], 'questions_answered':0},key)
+        db.put({'level': 0, 'questions':[[],[],[]], 'first_time_correct':[0,0,0], 'current_question':0, 'answers':[dict(),dict(),dict()], 'questions_answered':0, 'numPerLevel':st.session_state.numPerLevel},key)
         if 'current_question' not in st.session_state:
             st.session_state.current_question = 0
         if 'questions' not in st.session_state:
@@ -228,7 +225,7 @@ def createPage(key):
     
     
     string = "Level "+str(st.session_state.level)
-    if st.session_state.questions_answered >= QUESTIONS_NUMBER:
+    if st.session_state.questions_answered >= st.session_state.numPerLevel:
         st.balloons()
         incr_level()
         st.session_state.questions_answered = 0

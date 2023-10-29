@@ -120,7 +120,7 @@ try:
                     Progress.createPage()
                 
                 if selected=="Settings":
-                    Settings.createPage(username)
+                    Settings.createPage()
                 
             elif not authentication_status:
                 with info:

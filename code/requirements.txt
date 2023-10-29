@@ -1,6 +1,6 @@
 streamlit
 pandas
-pillow
+pillow==8.0.1
 path
 streamlit-authenticator==0.1.5 
 pathlib
@@ -9,3 +9,7 @@ extra-streamlit-components==0.1.53
 altair==4.0
 deta
 openai
+py-avataaars==1.0.2
+base58==2.0.1
+cairosvg
+

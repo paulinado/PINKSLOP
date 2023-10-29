@@ -4,7 +4,7 @@ import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 import pickle
 from pathlib import Path
-from views import Learn, Progress, Settings, ExampleDB, Learn2
+from views import Learn, Progress, Settings, ExampleDB, Learn2, avatar
 import re
 from deta import Deta
 
@@ -98,13 +98,13 @@ try:
                 
                 with st.sidebar:
                     selected = option_menu(menu_title=None,  # required
-                    options=["Learn", "Progress", "Settings", "ExampleDB", "Learn2"],  # required
+                    options=["Learn", "Progress", "Settings", "ExampleDB", "Learn2", "Avatar"],  # required
                     icons=None,  # optional
                     menu_icon="menu-down",  # optional
                     default_index=0,  # optional
                     )
             
-        
+
                 if selected=="Learn":
                     Learn.createPage()
                 
@@ -119,6 +119,9 @@ try:
                 
                 if selected=="ExampleDB":
                     ExampleDB.createPage(deta)
+                
+                if selected=="Avatar":
+                    avatar.createPage();
 
             elif not authentication_status:
                 with info:

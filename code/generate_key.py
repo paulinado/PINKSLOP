@@ -5,7 +5,7 @@ import streamlit_authenticator as stauth
 from deta import Deta
 
 deta = Deta(st.secrets["data_key"])
-db = deta.Base("users")
+db = deta.Base("users2")
 
 usernames = ["pparker", "rmiller"]
 passwords = ["pass123", "pass123"]

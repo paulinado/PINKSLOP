@@ -88,26 +88,26 @@ def failed_attempt():
 def click_button():
     st.session_state.clicked = True
 
-def get_next_question():
-    f = open(dir+'/code/questions.txt', 'r')
-    lines = f.readlines()
-    question = json.loads(lines[int(st.session_state.current_question)])
-    f.close()
-    return question
-
 # def get_next_question():
-#     #make a button to cheat increase the state level for demonstration
-#     if st.session_state.level == 0:
-#         response = get_easy_question(st.secrets['gpt_key'])
-#     elif st.session_state.level == 1:
-#         response = get_medium_question(st.secrets['gpt_key'])
-#     elif st.session_state.level == 2:
-#         response = get_hard_question(st.secrets['gpt_key'])
-#     else:
-#         response = get_hard_question(st.secrets['gpt_key'])
-#         #you are done??
-#         pass
-#     return response
+#     f = open(dir+'/code/questions.txt', 'r')
+#     lines = f.readlines()
+#     question = json.loads(lines[int(st.session_state.current_question)])
+#     f.close()
+#     return question
+
+def get_next_question():
+    #make a button to cheat increase the state level for demonstration
+    if st.session_state.level == 0:
+        response = get_easy_question(st.secrets['gpt_key'])
+    elif st.session_state.level == 1:
+        response = get_medium_question(st.secrets['gpt_key'])
+    elif st.session_state.level == 2:
+        response = get_hard_question(st.secrets['gpt_key'])
+    else:
+        response = get_hard_question(st.secrets['gpt_key'])
+        #you are done??
+        pass
+    return response
 
 def display_question():
     # Handle first case
@@ -164,7 +164,7 @@ def next_question():
 
 def createPage(key):
     deta = Deta(st.secrets["data_key"])
-    db = deta.Base("progress-new")
+    db = deta.Base("progress-2")
     users = db.fetch().items
     keys = []
     for user in users:

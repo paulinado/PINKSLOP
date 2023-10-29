@@ -4,6 +4,8 @@ import path
 import sys
 import time
 import json
+sys.path.append("..")
+from genquiz_easy import get_easy_question
 
 QUESTIONS_NUMBER = 10
 
@@ -14,11 +16,8 @@ def click_button():
     st.session_state.clicked = True
 
 def get_next_question():
-    f = open(dir+'/code/questions.txt', 'r')
-    lines = f.readlines()
-    question = json.loads(lines[st.session_state.current_question])
-    f.close()
-    return question
+    response = get_easy_question(st.secrets['gpt_key'])
+    return response
 
 def display_question():
     # Handle first case

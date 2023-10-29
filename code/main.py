@@ -4,7 +4,7 @@ import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 import pickle
 from pathlib import Path
-from views import Learn, Progress, Settings, ExampleDB, Learn2
+from views import Learn, Progress, Settings, Learn2
 import re
 from deta import Deta
 
@@ -63,7 +63,11 @@ def sign_up():
         else:
             st.warning('Invalid Username')
 
-        
+
+if "username" not in st.session_state:
+    st.session_state.username = ""
+if "numPerLevel" not in st.session_state:
+    st.session_state.numPerLevel = 10
         
 deta = Deta(st.secrets["data_key"])
 db = deta.Base("users2")
@@ -94,6 +98,7 @@ try:
         if username in usernames:
             if authentication_status:
                 # let User see app
+                st.session_state.username = username
                 st.sidebar.subheader(f'Welcome {username}')
                 authenticator.logout('Log Out', 'sidebar')
                 
@@ -118,9 +123,6 @@ try:
                 if selected=="Settings":
                     Settings.createPage()
                 
-                if selected=="ExampleDB":
-                    ExampleDB.createPage(deta)
-
             elif not authentication_status:
                 with info:
                     st.error('Incorrect Password or username')

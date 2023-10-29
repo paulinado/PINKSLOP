@@ -21,31 +21,53 @@ def add_question(question):
     currentQuestions = st.session_state.db.get(st.session_state.key)['questions']
     currentQuestions[st.session_state.level].append(question)
 
+    # currentQuestions = (st.session_state.db).get(st.session_state.key)['questions'][st.session_state.level].append(question)
     st.session_state.db.update({'questions':currentQuestions},st.session_state.key)
+    
+    #print(st.session_state.db.get(st.session_state.key)['questions'][st.session_state.level])
+    #st.session_state.db[st.session_state.key]['questions'][st.session_state.level].append(question)
+    #st.session_state.user['questions'][st.session_state.level].append(question)
+    # st.session_state.db.append({'questions':st.session_state.questions},st.session_state.key)
         
 
 def incr_current_question():
     st.session_state.current_question += 1
+    #st.session_state.db[st.session_state.key]['current_question'].increment()
     st.session_state.db.update({'current_question': st.session_state.current_question},st.session_state.key)
+    #st.session_state.user['current_question'] += 1
+    #st.session_state.db.update({},st.session_state.key)
 
 def decr_current_question():
     st.session_state.current_question -= 1
     st.session_state.db.update({'current_question': st.session_state.current_question},st.session_state.key)
+    #st.session_state.user['current_question'] -= 1
+    #st.session_state.db[st.session_state.key]['current_question'].increment(-1)
+    # st.session_state.db.update({},st.session_state.key)
 
 def add_answer(answer):
     st.session_state.answers[st.session_state.current_question] = answer
+    #print(st.session_state.answers)
     currentAnswers = st.session_state.db.get(st.session_state.key)['answers']
     currentAnswers[st.session_state.level][st.session_state.current_question] = answer
     st.session_state.db.update({'answers':currentAnswers},st.session_state.key)
+    #st.session_state.db[st.session_state.key]['answers'][st.session_state.level].append(answer)
+    #st.session_state.user['answers'][st.session_state.level][st.session_state.current_question] = answer
+    # st.session_state.db.update({},st.session_state.key)
 
 def incr_questions_answered():
     st.session_state.questions_answered += 1
     st.session_state.db.update({'questions_answered': st.session_state.questions_answered},st.session_state.key)
+    #st.session_state.db[st.session_state.key]['questions_answered'].increment()
+    #st.session_state.user['questions_answered'] += 1
+    # st.session_state.db.update({},st.session_state.key)
 
 def incr_level():
     if st.session_state.level < 2:
         st.session_state.level += 1
         st.session_state.db.update({'level': st.session_state.level},st.session_state.key)
+        #st.session_state.user['level'] += 1
+        #st.session_state.db[st.session_state.key]['level'].increment()
+        # st.session_state.db.update({},st.session_state.key)
         
 
 def click_button():
@@ -87,10 +109,8 @@ def display_question():
 
     form_submit_button_disabled  = st.session_state.current_question in st.session_state.answers
     
-    print(st.sesstion_state.answers)
     try:
         previous_answer = st.session_state.answers[st.session_state.current_question]
-        print(previous_answer)
     except:
         previous_answer = None
     
@@ -147,11 +167,13 @@ def createPage(key):
             st.session_state.level = 0
     else:
         user = db.get(key)
+        print(user)
         level = user['level']
         questions = user['questions'][level]
         first_time_correct = user['first_time_correct']
         current_question = user['current_question']
         answers = user['answers'][level]
+        #print(answers)
         questions_answered =  user['questions_answered']
         
         if 'current_question' not in st.session_state:

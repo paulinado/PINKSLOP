@@ -8,7 +8,7 @@ import openai
 chat_history = [
     {
         "role": "system",
-        "content": "You are a REST API server with an endpoint /generate-random-question/:topic, which generates unique primary school level medium difficulty math quiz question about fractions in json data.",
+        "content": "You are a REST API server with an endpoint /generate-random-question, which generates unique primary school level medium difficulty math quiz question about fractions in json data.",
     },
     {"role": "user", "content": "GET /generate-random-question/devops"},
     {
@@ -23,7 +23,7 @@ chat_history = [
 ]
 
 # I define a function that takes a topic string and an API key, and returns a dictionary with a quiz question, options, answer, and explanation.
-def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
+def get_medium_question(api_key: str) -> Dict[str, str]:
     global chat_history
 
     # I set the OpenAI API key.
@@ -33,7 +33,7 @@ def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
     current_chat = chat_history[:]
     current_user_message = {
         "role": "user",
-        "content": f"GET /generate-random-question/{topic}", 
+        "content": f"GET /generate-random-question", 
     }
     current_chat.append(current_user_message)
     chat_history.append(current_user_message)
@@ -49,5 +49,4 @@ def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
     chat_history.append(current_assistent_message)
 
     # I print the quiz question and return it as a dictionary.
-    print(f"Response:\n{quiz}")
     return json.loads(quiz)

@@ -8,22 +8,22 @@ import openai
 chat_history = [
     {
         "role": "system",
-        "content": "You are a REST API server with an endpoint /generate-random-question/:topic, which generates unique primary school level hard difficulty math quiz question about word problems in json data.",
+        "content": "You are a REST API server with an endpoint /generate-random-question, which generates unique primary school easy level math quiz question about addtion, subtraction and multiplication in json data.",
     },
     {"role": "user", "content": "GET /generate-random-question/devops"},
     {
         "role": "assistant",
-        "content": '\n\n{\n   "question": "A bakery sold 24 pies in the morning and 18 pies in the evening. If each pie costs $8, how much money did the bakery make from selling pies?",\n    "answer": "336",\n    "explanation": "The bakery sold a total of 24 + 18 = 42 pies. Multiplying 42 by the cost of each pie ($8) gives us a total of $336."\n}',
+        "content": '\n\n{\n    "question": "What is the 10%2 equal to?",\n "answer": "5",\n    "explanation": "If you have 10 pencils that you need to allocate across 2 people equally, you give each person 5 pencils"\n}',
     },
     {"role": "user", "content": "GET /generate-random-question/jenkins"},
-   {
+    {
         "role": "assistant",
-        "content": '\n\n{\n    "question": "Luke and Olivia have 10 breadsticks, and Luke has 4 times more breadsticks than Olivia. If Paulina takes 1 breadstick from Olivia, how many breadsticks does Olivia have left",\n  "answer": "1",\n    "4x+x =10, 5x=10, x=2. Paulina takes one breadstick so 2-1=1 "\n}',
+        "content": '\n\n{\n    "question": "If Mary has 10 apples, and Tracy has 3 more apples than Mary. How many apples does Tracy have?",\n  "answer": "13",\n    "explanation": "10+3=13"\n}',
     },
 ]
 
 # I define a function that takes a topic string and an API key, and returns a dictionary with a quiz question, options, answer, and explanation.
-def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
+def get_easy_question(api_key: str) -> Dict[str, str]:
     global chat_history
 
     # I set the OpenAI API key.
@@ -33,7 +33,7 @@ def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
     current_chat = chat_history[:]
     current_user_message = {
         "role": "user",
-        "content": f"GET /generate-random-question/{topic}", 
+        "content": f"GET /generate-random-question", 
     }
     current_chat.append(current_user_message)
     chat_history.append(current_user_message)
@@ -49,5 +49,4 @@ def get_quiz_from_topic(topic: str, api_key: str) -> Dict[str, str]:
     chat_history.append(current_assistent_message)
 
     # I print the quiz question and return it as a dictionary.
-    print(f"Response:\n{quiz}")
     return json.loads(quiz)

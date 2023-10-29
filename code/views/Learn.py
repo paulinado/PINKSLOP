@@ -3,6 +3,8 @@ from PIL import Image
 import path
 import sys
 import time
+sys.path.append("..")
+from genquiz_easy import get_easy_question
 
 QUESTIONS_NUMBER = 10
 
@@ -13,11 +15,9 @@ def click_button():
     st.session_state.clicked = True
 
 def get_next_question():
-    f = open(dir+'/code/questions.txt', 'r')
-    lines = f.readlines()
-    q = lines[st.session_state.current_question*2].strip()
-    a = lines[st.session_state.current_question*2+1].strip()
-    f.close()
+    response = get_easy_question(st.secrets['gpt_key'])
+    q = response['question']
+    a = response['answer']
     return (q, a)
 
 def display_question():

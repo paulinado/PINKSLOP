@@ -1,20 +1,11 @@
-How much is 5+5?
-10
-What is 4+2?
-6
-3+5?
-8
-6+4?
-10
-7+7?
-14
-9+1?
-10
-12+1?
-13
-5+4?
-9
-10+10?
-20
-8+1?
-9
+{"question":"5 + 0 = ?", "answer":"5", "Explanation": "because it is"}
+{"question":"10 + 10 = ?", "answer":"20", "Explanation": "because it is"}
+{"question":"2 + 1 = ?", "answer":"3", "Explanation": "because it is"}
+{"question":"9 + 7 = ?", "answer":"16", "Explanation": "because it is"}
+{"question":"7 + 8 = ?", "answer":"15", "Explanation": "because it is"}
+{"question":"5 + 0 = ?", "answer":"5", "Explanation": "because it is"}
+{"question":"10 + 10 = ?", "answer":"20", "Explanation": "because it is"}
+{"question":"2 + 1 = ?", "answer":"3", "Explanation": "because it is"}
+{"question":"9 + 7 = ?", "answer":"16", "Explanation": "because it is"}
+{"question":"7 + 8 = ?", "answer":"15", "Explanation": "because it is"}
+{"question":"7 + 8 = ?", "answer":"15", "Explanation": "because it is"}

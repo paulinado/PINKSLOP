@@ -107,7 +107,7 @@ try:
                 
                 with st.sidebar:
                     selected = option_menu(menu_title=None,  # required
-                    options=["Learn", "Progress", "Settings", "Learn2"],  # required
+                    options=["Learn", "Progress", "Settings"],  # required
                     icons=None,  # optional
                     menu_icon="menu-down",  # optional
                     default_index=0,  # optional
@@ -117,14 +117,11 @@ try:
                 if selected=="Learn":
                     Learn.createPage(key)
                 
-                if selected=="Learn2":
-                    Learn2.createPage()
-                
                 if selected=="Progress":
                     Progress.createPage(key)
                 
                 if selected=="Settings":
-                    Settings.createPage()
+                    Settings.createPage(key)
                 
             elif not authentication_status:
                 with info:

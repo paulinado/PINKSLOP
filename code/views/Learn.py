@@ -3,6 +3,7 @@ from PIL import Image
 import path
 import sys
 import time
+import json
 sys.path.append("..")
 from genquiz_easy import get_easy_question
 
@@ -16,24 +17,40 @@ def click_button():
 
 def get_next_question():
     response = get_easy_question(st.secrets['gpt_key'])
-    q = response['question']
-    a = response['answer']
-    return (q, a)
+    return response
 
 def display_question():
-    q, a = get_next_question()
+    # Handle first case
+    if len(st.session_state.questions) == 0:
+        try:
+            question = get_next_question()
+        except Exception as e:
+            print(e)
+            st.error(
+                "Oops, there appears to be no questions for you right now!"
+            )
+            return
+        st.session_state.questions.append(question)
 
-    if st.session_state.current_question in st.session_state.answers:
-        index = st.session_state.answers[st.session_state.current_question]
+    form_submit_button_disabled  = st.session_state.current_question in st.session_state.answers
+    
+    try:
+        previous_answer = st.session_state.answers[st.session_state.current_question]
+    except:
+        previous_answer = None
+    
+    question = st.session_state.questions[st.session_state.current_question]
 
     st.write("Question", str(st.session_state.current_question + 1))
-    st.write(q)
+    st.write(question['question'])
     form = st.form("Answer", clear_on_submit=True)
-    answer = form.text_input("Enter your answer here")
-    submitted = form.form_submit_button("Check")
+    answer = form.text_input("Enter your answer here", key=st.session_state.current_question, placeholder=previous_answer  ,disabled=form_submit_button_disabled)
+    submitted = form.form_submit_button("Check", disabled=form_submit_button_disabled)
+    
     if submitted:
-        st.session_state.answers[st.session_state.current_question] = answer
-        if answer == a:
+        
+        if answer == question['answer']:
+            st.session_state.answers[st.session_state.current_question] = answer
             form.write("Correct!")
             st.session_state.questions_answered += 1
         else:
@@ -46,6 +63,9 @@ def prev_question():
 def next_question():
     if st.session_state.current_question < QUESTIONS_NUMBER-1:
         st.session_state.current_question += 1
+        next_question = get_next_question()
+        st.session_state.questions.append(next_question)
+        
 
 def createPage():
     st.title("Learn")

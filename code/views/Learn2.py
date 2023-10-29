@@ -1,125 +1,112 @@
 import streamlit as st
+from PIL import Image
 import path
 import sys
+import time
 import json
 
+QUESTIONS_NUMBER = 10
 
 dir = path.Path(__file__).abspath().parent.parent.parent
 sys.path.append(dir.parent.parent.parent)
 
-def get_all_questions():
-    f = open(dir+'/code/questions2.txt', 'r')
+def click_button():
+    st.session_state.clicked = True
+
+def get_next_question():
+    f = open(dir+'/code/questions.txt', 'r')
     lines = f.readlines()
-    questions = []
-    for each in lines:
-        questions.append(json.loads(each))
+    question = json.loads(lines[st.session_state.current_question])
     f.close()
-    return questions
-    
-    
-# Define a function to display the current question and options
+    return question
+
 def display_question():
     # Handle first case
     if len(st.session_state.questions) == 0:
         try:
-            questionset = get_all_questions()
-        except  Exception as e:
+            question = get_next_question()
+        except Exception as e:
             print(e)
-            st.error("Uhm oops, it seems you have no questions...")
+            st.error(
+                "Oops, there appears to be no questions for you right now!"
+            )
             return
-        for each in questionset:
-            st.session_state.questions.append(each)
+        st.session_state.questions.append(question)
 
-    # Disable the submit button if the user has already answered this question
-    submit_button_disabled = st.session_state.current_question in st.session_state.answers
-
-    # Get the current question from the questions list
+    form_submit_button_disabled  = st.session_state.current_question in st.session_state.answers
+    
+    try:
+        previous_answer = st.session_state.answers[st.session_state.current_question]
+    except:
+        previous_answer = None
+    
     question = st.session_state.questions[st.session_state.current_question]
 
-    # Display the question prompt
-    st.write(f"{st.session_state.current_question + 1}. {question['question']}")
-
-    # Use an empty placeholder to display the radio button options
-    options = st.empty()
-
-    # Display the radio button options and wait for the user to select an answer
-    user_answer = options.radio("Your answer:", question["options"], key=st.session_state.current_question)
-
-    # Display the submit button and disable it if necessary
-    submit_button = st.button("Submit", disabled=submit_button_disabled)
-
-    # If the user has already answered this question, display their previous answer
-    if st.session_state.current_question in st.session_state.answers:
-        index = st.session_state.answers[st.session_state.current_question]
-        options.radio(
-            "Your answer:",
-            question["options"],
-            key=float(st.session_state.current_question),
-            index=index,
-        )
-
-    # If the user clicks the submit button, check their answer and show the explanation
-    if submit_button:
-        # Record the user's answer in the session state
-        st.session_state.answers[st.session_state.current_question] = question["options"].index(user_answer)
-
-        # Check if the user's answer is correct and update the score
-        if user_answer == question["answer"]:
-            st.write("Correct!")
-            st.session_state.right_answers += 1
+    st.write("Question", str(st.session_state.current_question + 1))
+    st.write(question['question'])
+    form = st.form("Answer", clear_on_submit=True)
+    answer = form.text_input("Enter your answer here", key=st.session_state.current_question, placeholder=previous_answer  ,disabled=form_submit_button_disabled)
+    submitted = form.form_submit_button("Check", disabled=form_submit_button_disabled)
+    
+    if submitted:
+        
+        if answer == question['answer']:
+            st.session_state.answers[st.session_state.current_question] = answer
+            form.write("Correct!")
+            st.session_state.questions_answered += 1
         else:
-            st.write(f"Sorry, the correct answer was {question['answer']}.")
-            st.session_state.wrong_answers += 1
-
-        # Show an expander with the explanation of the correct answer
-        with st.expander("Explanation"):
-            st.write(question["explanation"])
-
-    # Display the current score
-    st.write(f"Right answers: {st.session_state.right_answers}")
-    st.write(f"Wrong answers: {st.session_state.wrong_answers}")
+            form.write("Incorrect! Try again")
 
 def prev_question():
     if st.session_state.current_question > 0:
         st.session_state.current_question -= 1
-        st.session_state.explanation = None
 
 def next_question():
-    # Move to the next question in the questions list
-    if st.session_state.current_question < len(st.session_state.questions):
+    if st.session_state.current_question < QUESTIONS_NUMBER-1:
         st.session_state.current_question += 1
-
-    # # If we've reached the end of the questions list, get a new question
-    # if st.session_state.current_question > len(st.session_state.questions) - 1:
-    #     try:
-    #         next_question = get_quiz_from_topic(topic, api_key)
-    #     except openai.error.AuthenticationError:
-    #         st.session_state.current_question -= 1
-    #         return
-    #     st.session_state.questions.append(next_question)
+        next_question = get_next_question()
+        st.session_state.questions.append(next_question)
+        
 
 def createPage():
-    # Initialize session state variables if they don't exist yet
-    if "current_question" not in st.session_state:
-        st.session_state.answers = {}
+    st.title("Learn")
+    col1, col2, col3 = st.columns([1, 2, 1])
+
+    if 'current_question' not in st.session_state:
         st.session_state.current_question = 0
+    if 'questions' not in st.session_state:
         st.session_state.questions = []
-        st.session_state.right_answers = 0
-        st.session_state.wrong_answers = 0
+    if 'answers' not in st.session_state:
+        st.session_state.answers = {}
+    if 'clicked' not in st.session_state:
+        st.session_state.clicked = False
+    if 'questions_answered' not in st.session_state:
+        st.session_state.questions_answered = 0
+    if 'level' not in st.session_state:
+        st.session_state.level = 0
+    
+    string = "Level "+str(st.session_state.level)
+    if st.session_state.questions_answered >= QUESTIONS_NUMBER:
+        st.balloons()
+        st.session_state.level += 1
+        st.session_state.questions_answered = 0
+        st.session_state.current_question = 0
 
-        # Create a 3-column layout for the Prev/Next buttons and the question display
-    col1, col2, col3 = st.columns([1, 6, 1])
-
-    # Add a Prev button to the left column that goes to the previous question
     with col1:
         if col1.button("Prev"):
             prev_question()
-
-    # Add a Next button to the right column that goes to the next question
+    
     with col3:
         if col3.button("Next"):
             next_question()
+        path_to_image = dir + "/elements/polly_pig.jpg"
+        image = Image.open(path_to_image)
+        st.image(image=image)
 
-    # Display the actual quiz question
     with col2:
-        display_question()
+        button = st.empty()
+        click = button.button("Begin Learning 🎉", on_click=click_button)
+        if st.session_state.clicked:
+            button.empty()
+            st.progress(st.session_state.questions_answered/10, string)
+            display_question()

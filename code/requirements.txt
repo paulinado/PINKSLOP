@@ -9,3 +9,5 @@ extra-streamlit-components==0.1.53
 altair==4.0
 deta
 openai
+matplotlib
+numpy

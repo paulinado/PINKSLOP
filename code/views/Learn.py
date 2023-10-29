@@ -43,7 +43,8 @@ def prev_question():
         st.session_state.current_question -= 1
 
 def next_question():
-    st.session_state.current_question += 1
+    if st.session_state.current_question < QUESTIONS_NUMBER-1:
+        st.session_state.current_question += 1
 
 def createPage():
     st.title("Learn")
@@ -66,11 +67,11 @@ def createPage():
             prev_question()
     
     with col3:
+        if col3.button("Next"):
+            next_question()
         path_to_image = dir + "/elements/polly_pig.jpg"
         image = Image.open(path_to_image)
         st.image(image=image)
-        if col3.button("Next"):
-            next_question()
 
     with col2:
         button = st.empty()

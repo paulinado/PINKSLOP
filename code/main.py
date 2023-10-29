@@ -45,14 +45,14 @@ def sign_up():
         
         if validate_username(username):
             if username not in get_all_usernames():
-                    if len(password1) >= 6:
-                        if password1 == password2:
+                    if len(password1) >= 6 and submitted:
+                        if password1 == password2 and submitted:
                             # Add User to DB
                             hashed_password = stauth.Hasher([password2]).generate()
-                            if submitted:
-                                new_user(username, hashed_password[0])
-                                st.success('Account created successfully!!')
-                                st.balloons()
+                            #if submitted:
+                            new_user(username, hashed_password[0])
+                            st.success('Account created successfully!!')
+                            st.balloons()
                         else:
                             st.warning('Passwords Do Not Match')
                     else:
@@ -76,6 +76,7 @@ st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar
 
 try:
     users = get_all_users()
+    print(users)
     keys = []
     usernames = []
     hashed_passwords = []
@@ -88,12 +89,14 @@ try:
     authenticator = stauth.Authenticate(keys, usernames, hashed_passwords, "numberninjas", "abcdef")
     
     key, authentication_status, username = authenticator.login("Login", "main")
+    print(username)
 
     info, info1 = st.columns(2)
 
     if not authentication_status:
         sign_up()
 
+    print(usernames)
     if username:
         if username in usernames:
             if authentication_status:
@@ -131,7 +134,7 @@ try:
                     st.warning('Please feed in your credentials')
         else:
             with info:
-                st.warning('Username does not exist, Please Sign up')
+                st.warning('Please clear your cookies and try refreshing')
 
 
 except:

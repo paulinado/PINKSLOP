@@ -66,7 +66,7 @@ def sign_up():
         
         
 deta = Deta(st.secrets["data_key"])
-db = deta.Base("users")
+db = deta.Base("users2")
 st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 

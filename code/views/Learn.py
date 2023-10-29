@@ -139,13 +139,12 @@ def display_question():
     answer = form.text_input("Enter your answer here", key=st.session_state.current_question, placeholder=previous_answer  ,disabled=form_submit_button_disabled)
     submitted = form.form_submit_button("Check", disabled=form_submit_button_disabled)
     
-    if submitted:
-        
+    if submitted: 
         if answer == question['answer']:
             add_answer(answer)
             form.write("Correct!")
             incr_questions_answered()
-            if st.session_state.attempted[int(st.session_state.current_question)]:
+            if not st.session_state.attempted[int(st.session_state.current_question)]:
                 incr_first_time_correct()
         else:
             form.write("Incorrect! Try again")
@@ -192,7 +191,7 @@ def createPage(key):
         print(user)
         level = user['level']
         questions = user['questions'][level]
-        first_time_correct = user['first_time_correct']
+        first_time_correct = user['first_time_correct'][level]
         current_question = user['current_question']
         answers = user['answers'][level]
         #print(answers)
@@ -210,6 +209,8 @@ def createPage(key):
             st.session_state.questions_answered = questions_answered
         if 'level' not in st.session_state:
             st.session_state.level = int(level)
+        if 'first_time_correct' not in st.session_state:
+            st.session_state.first_time_correct = first_time_correct
     
     if 'key' not in st.session_state:
         st.session_state.key = key

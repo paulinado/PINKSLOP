@@ -62,11 +62,11 @@ def sign_up():
         else:
             st.warning('Invalid Username')
 
+
 if "username" not in st.session_state:
     st.session_state.username = ""
 if "numPerLevel" not in st.session_state:
     st.session_state.numPerLevel = 10
-
         
 deta = Deta(st.secrets["data_key"])
 db = deta.Base("users")

@@ -19,7 +19,6 @@ def createPage():
     st.button("Reset progress", on_click=reset)
 
     user_settings = db.fetch()
-    numPerLevel = 10
     for setting in user_settings:
          if setting['user'] == st.session_state.username:
               st.session_state.numPerLevel = setting['numPerLevel']
@@ -28,6 +27,8 @@ def createPage():
             label="Counter",
             min_value=1,
             max_value=100,
-            value=numPerLevel,
-            step=1,)
+            value=st.session_state.numPerLevel,
+            step=1,
+            onChange=updateSetting,
+            )
     

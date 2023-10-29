@@ -6,11 +6,11 @@ import numpy as np
 
 def get_user_data(key):
     deta = Deta(st.secrets["data_key"])
-    db = deta.Base("progress-new")
+    db = deta.Base("progress-2")
     user = db.get(key)
     level = user['level']
-    levels = np.arrange(1, level+1)
-    first_time_correct = user['first_time_correct']
+    levels = np.arange(level+1)
+    first_time_correct = user['first_time_correct'][:level+1]
     data = {'Levels' : levels, 'Correct answers': first_time_correct}
     return data
 

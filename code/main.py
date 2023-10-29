@@ -34,6 +34,7 @@ def validate_username(username):
         return True
     return False
 
+#sign up broken
 def sign_up():
     with st.form(key='signup', clear_on_submit=True):
         st.subheader('Sign Up')
@@ -111,7 +112,7 @@ try:
             
         
                 if selected=="Learn":
-                    Learn.createPage()
+                    Learn.createPage(key)
                 
                 if selected=="Learn2":
                     Learn2.createPage()

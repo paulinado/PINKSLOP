@@ -70,7 +70,7 @@ if "numPerLevel" not in st.session_state:
     st.session_state.numPerLevel = 10
         
 deta = Deta(st.secrets["data_key"])
-db = deta.Base("users")
+db = deta.Base("users2")
 st.set_page_config(page_title='NumberNinjas!', page_icon='🥷', initial_sidebar_state='expanded')
 
 

@@ -35,6 +35,7 @@ def display_question():
         st.session_state.answers[st.session_state.current_question] = answer
         if answer == a:
             form.write("Correct!")
+            st.session_state.questions_answered += 1
         else:
             form.write("Incorrect! Try again")
 
@@ -49,9 +50,6 @@ def next_question():
 def createPage():
     st.title("Learn")
     col1, col2, col3 = st.columns([1, 2, 1])
-    level=0
-    num = level/7
-    string = "Level "+str(level)
 
     if 'current_question' not in st.session_state:
         st.session_state.current_question = 0
@@ -61,7 +59,18 @@ def createPage():
         st.session_state.answers = {}
     if 'clicked' not in st.session_state:
         st.session_state.clicked = False
+    if 'questions_answered' not in st.session_state:
+        st.session_state.questions_answered = 0
+    if 'level' not in st.session_state:
+        st.session_state.level = 0
     
+    string = "Level "+str(st.session_state.level)
+    if st.session_state.questions_answered >= QUESTIONS_NUMBER:
+        st.balloons()
+        st.session_state.level += 1
+        st.session_state.questions_answered = 0
+        st.session_state.current_question = 0
+
     with col1:
         if col1.button("Prev"):
             prev_question()
@@ -78,5 +87,5 @@ def createPage():
         click = button.button("Begin Learning 🎉", on_click=click_button)
         if st.session_state.clicked:
             button.empty()
-            st.progress(num, string)
+            st.progress(st.session_state.questions_answered/10, string)
             display_question()

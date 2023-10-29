@@ -18,6 +18,7 @@ sys.path.append(dir.parent.parent.parent)
 
 def add_question(question):
     st.session_state.questions.append(question)
+    st.session_state.attempted.append(False)
     currentQuestions = st.session_state.db.get(st.session_state.key)['questions']
     currentQuestions[st.session_state.level].append(question)
 
@@ -48,7 +49,10 @@ def add_answer(answer):
     st.session_state.answers[st.session_state.current_question] = answer
     #print(st.session_state.answers)
     currentAnswers = st.session_state.db.get(st.session_state.key)['answers']
-    currentAnswers[st.session_state.level][st.session_state.current_question] = answer
+    
+    if currentAnswers[st.session_state.level] == None:
+        currentAnswers[st.session_state.level] = dict()
+    currentAnswers[st.session_state.level][str(st.session_state.current_question)] = answer
     st.session_state.db.update({'answers':currentAnswers},st.session_state.key)
     #st.session_state.db[st.session_state.key]['answers'][st.session_state.level].append(answer)
     #st.session_state.user['answers'][st.session_state.level][st.session_state.current_question] = answer
@@ -68,15 +72,26 @@ def incr_level():
         #st.session_state.user['level'] += 1
         #st.session_state.db[st.session_state.key]['level'].increment()
         # st.session_state.db.update({},st.session_state.key)
-        
+    
+def incr_first_time_correct():
+    st.session_state.first_time_correct += 1
+    print(st.session_state.first_time_correct)
+    #st.session_state.db.update({'questions_answered': st.session_state.questions_answered},st.session_state.key)
+    f = st.session_state.db.get(st.session_state.key)['first_time_correct']
+    f[int(st.session_state.level)] += 1
+    
+    st.session_state.db.update({'first_time_correct': f},st.session_state.key)
 
+def failed_attempt():
+    st.session_state.attempted[int(st.session_state.current_question)] = True
+    
 def click_button():
     st.session_state.clicked = True
 
 def get_next_question():
     f = open(dir+'/code/questions.txt', 'r')
     lines = f.readlines()
-    question = json.loads(lines[st.session_state.current_question])
+    question = json.loads(lines[int(st.session_state.current_question)])
     f.close()
     return question
 
@@ -107,14 +122,16 @@ def display_question():
             return
         add_question(question)
 
-    form_submit_button_disabled  = st.session_state.current_question in st.session_state.answers
+    form_submit_button_disabled  = str(st.session_state.current_question) in st.session_state.answers
     
     try:
-        previous_answer = st.session_state.answers[st.session_state.current_question]
-    except:
+        previous_answer = st.session_state.answers[str(st.session_state.current_question)]
+    except Exception as e:
+        # print(e)
+        # print(st.session_state.answers, st.session_state.current_question)
         previous_answer = None
     
-    question = st.session_state.questions[st.session_state.current_question]
+    question = st.session_state.questions[int(st.session_state.current_question)]
 
     st.write("Question", str(st.session_state.current_question + 1))
     st.write(question['question'])
@@ -128,15 +145,18 @@ def display_question():
             add_answer(answer)
             form.write("Correct!")
             incr_questions_answered()
+            if st.session_state.attempted[int(st.session_state.current_question)]:
+                incr_first_time_correct()
         else:
             form.write("Incorrect! Try again")
+            failed_attempt()
 
 def prev_question():
-    if st.session_state.current_question > 0:
+    if int(st.session_state.current_question) > 0:
         decr_current_question()
 
 def next_question():
-    if st.session_state.current_question < QUESTIONS_NUMBER-1:
+    if int(st.session_state.current_question) < QUESTIONS_NUMBER-1:
         incr_current_question()
         next_question = get_next_question()
         add_question(next_question)
@@ -165,6 +185,8 @@ def createPage(key):
             st.session_state.questions_answered = 0
         if 'level' not in st.session_state:
             st.session_state.level = 0
+        if 'first_time_correct' not in st.session_state:
+            st.session_state.first_time_correct = 0
     else:
         user = db.get(key)
         print(user)
@@ -177,24 +199,27 @@ def createPage(key):
         questions_answered =  user['questions_answered']
         
         if 'current_question' not in st.session_state:
-            st.session_state.current_question = current_question
+            st.session_state.current_question = int(current_question)
         if 'questions' not in st.session_state:
             st.session_state.questions = questions
         if 'answers' not in st.session_state:
             st.session_state.answers = answers
-            print(st.session_state.answers)
         if 'clicked' not in st.session_state:
             st.session_state.clicked = False
         if 'questions_answered' not in st.session_state:
             st.session_state.questions_answered = questions_answered
         if 'level' not in st.session_state:
-            st.session_state.level = level
+            st.session_state.level = int(level)
     
     if 'key' not in st.session_state:
         st.session_state.key = key
     
     if 'db' not in st.session_state:
         st.session_state.db = db
+        
+    #add to db
+    if 'attempted' not in st.session_state:
+        st.session_state.attempted = []
     
     st.title("Learn")
     col1, col2, col3 = st.columns([1, 2, 1])

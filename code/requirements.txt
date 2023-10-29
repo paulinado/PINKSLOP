@@ -11,3 +11,4 @@ deta
 openai
 matplotlib
 numpy
+streamlit_chat

@@ -4,7 +4,7 @@ import streamlit_authenticator as stauth
 from streamlit_option_menu import option_menu
 import pickle
 from pathlib import Path
-from views import Learn, Progress, Settings, Learn2
+from views import Learn, Progress, Settings, Learn2, Chatbot
 import re
 from deta import Deta
 
@@ -107,7 +107,7 @@ try:
                 
                 with st.sidebar:
                     selected = option_menu(menu_title=None,  # required
-                    options=["Learn", "Progress", "Settings"],  # required
+                    options=["Learn", "Progress", "Settings", "Chat-bot"],  # required
                     icons=None,  # optional
                     menu_icon="menu-down",  # optional
                     default_index=0,  # optional
@@ -122,6 +122,9 @@ try:
                 
                 if selected=="Settings":
                     Settings.createPage(key)
+                
+                if selected=="Chat-bot":
+                    Chatbot.createChat(key)
                 
             elif not authentication_status:
                 with info:

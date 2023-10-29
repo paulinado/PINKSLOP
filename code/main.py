@@ -55,7 +55,7 @@ def sign_up():
                             st.balloons()
                         else:
                             st.warning('Passwords Do Not Match')
-                    else:
+                    elif len(password1) > 0:
                         st.warning('Password is too Short')
             else:
                 st.warning('Username Already Exists')

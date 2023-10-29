@@ -12,6 +12,7 @@ db = deta.Base("progress-2")
 def reset(key):
     db.put({'level': 0, 'questions':[[],[],[]], 'first_time_correct':[0,0,0], 'current_question':0, 'answers':[dict(),dict(),dict()], 'questions_answered':0},key)
     pl = st.empty()
+    print(db.get(key))
     for k in st.session_state.keys():
         del st.session_state[k]
     pl.success('Your progress has been reset', icon="✅")

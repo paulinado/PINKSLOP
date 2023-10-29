@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import path
 import sys
+import time
 
 QUESTIONS_NUMBER = 10
 
@@ -14,18 +15,18 @@ def click_button():
 def get_next_question():
     pass
 
-def prepare_question(question_number):
+def prepare_question():
     correct = False
     f = open(dir+'/code/questions.txt', 'r')
     lines = f.readlines()
-    q = lines[0]
-    a = lines[1]
     while st.session_state.current_question <= QUESTIONS_NUMBER:
+        q = lines[st.session_state.current_question*2].strip()
+        a = lines[st.session_state.current_question*2+1].strip()
         placeholder = st.empty()
         with placeholder.container():
-            st.write("Question", str(question_number))
+            st.write("Question", str(st.session_state.current_question + 1))
             st.write(q)
-
+            st.write(a)
             form = st.form("Answer")
             answer = form.text_input("Enter your answer here")
             submitted = form.form_submit_button("Check")
@@ -34,10 +35,12 @@ def prepare_question(question_number):
             else:
                 if answer == a:
                     form.write("Correct!")
+                    time.sleep(5)
                     correct = True
                     st.session_state.current_question += 1
                 else:
                     form.write("Incorrect! Try again")
+                    time.sleep(5)
                     correct = False
                 placeholder.empty()
     f.close()
@@ -46,12 +49,12 @@ def prepare_question(question_number):
 
 def start_quiz():
     if 'current_question' not in st.session_state:
-        st.session_state.current_question = 1
+        st.session_state.current_question = 0
     level=0
     num = level/7
     string = "Level "+str(level)
     st.progress(num, string)
-    prepare_question(st.session_state.current_question)
+    prepare_question()
 
 
 def createPage():

@@ -7,12 +7,14 @@ import json
 dir = path.Path(__file__).abspath().parent.parent.parent
 sys.path.append(dir.parent.parent.parent)
 
-def get_first_question():
+def get_all_questions():
     f = open(dir+'/code/questions2.txt', 'r')
     lines = f.readlines()
-    question = json.loads(lines[0])
+    questions = []
+    for each in lines:
+        questions.append(json.loads(each))
     f.close()
-    return question
+    return questions
     
     
 # Define a function to display the current question and options
@@ -20,12 +22,13 @@ def display_question():
     # Handle first case
     if len(st.session_state.questions) == 0:
         try:
-            first_question = get_first_question()
+            questionset = get_all_questions()
         except  Exception as e:
             print(e)
-            st.error("Uhm oops...")
+            st.error("Uhm oops, it seems you have no questions...")
             return
-        st.session_state.questions.append(first_question)
+        for each in questionset:
+            st.session_state.questions.append(each)
 
     # Disable the submit button if the user has already answered this question
     submit_button_disabled = st.session_state.current_question in st.session_state.answers
@@ -77,12 +80,14 @@ def display_question():
     st.write(f"Wrong answers: {st.session_state.wrong_answers}")
 
 def prev_question():
-    pass
+    if st.session_state.current_question > 0:
+        st.session_state.current_question -= 1
+        st.session_state.explanation = None
 
 def next_question():
-    pass
-    # # Move to the next question in the questions list
-    # st.session_state.current_question += 1
+    # Move to the next question in the questions list
+    if st.session_state.current_question < len(st.session_state.questions):
+        st.session_state.current_question += 1
 
     # # If we've reached the end of the questions list, get a new question
     # if st.session_state.current_question > len(st.session_state.questions) - 1:
